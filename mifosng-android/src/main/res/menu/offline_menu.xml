@@ -5,12 +5,13 @@
   ~ See https://github.com/openMF/android-client/blob/master/LICENSE.md
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/offline"
         android:title="@string/offline"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:enabled="true"/>
 
 

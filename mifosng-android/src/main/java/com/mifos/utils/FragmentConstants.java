@@ -12,15 +12,27 @@ public class FragmentConstants {
 
     public static final String FRAG_DOCUMENT_LIST = "Document List Fragment";
 
+    public static final String FRAG_GROUP_SYNC = "Groups Sync";
+
+    public static final String FRAG_CLIENT_SYNC = "Clients Sync";
+
+    public static final String FRAG_SURVEYS_SYNC = "Surveys Sync";
+
     public static final String FRAG_CHARGE_LIST = "Charge List Fragment";
 
     public static final String FRAG_CLIENT_DETAILS = "Client Details Fragment";
+
+    public static final String FRAG_CLIENT_IDENTIFIER = "Client Identifier Fragment";
+
+    public static final String FRAG_GROUP_DETAILS = "Group Details Fragment";
 
     public static final String FRAG_LOAN_ACCOUNT_SUMMARY = "Loan Account Summary Fragment";
 
     public static final String FRAG_SAVINGS_ACCOUNT_SUMMARY = "Savings Account Summary Fragment";
 
     public static final String FRAG_CENTER_LIST = "Centers List Fragment";
+
+    public static final String FRAG_CENTER_DETAIL = "Center Details";
 
     public static final String FRAG_GROUP_LIST = "Group List Fragment";
 
@@ -32,4 +44,6 @@ public class FragmentConstants {
     public static final String DFRAG_DATATABLE_ENTRY_FORM = "Data_Table_Entry_Form";
 
     public static final String FRAG_DATA_TABLE = "Data Table Fragment";
+
+    public static final String DATA_TABLE_LIST = "Associated Datatables";
 }

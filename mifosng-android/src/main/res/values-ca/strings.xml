@@ -56,7 +56,7 @@
     <string name="level_name">Nom del nivell</string>
     <string name="list_all_clients">Llistat de clients</string>
     <string name="loan">Crèdit</string>
-    <string name="loanAccountSummary">Resum dels comptes de crèdit</string>
+    <string name="loanAccountSummaryStatus">Resum dels comptes de crèdit</string>
     <string name="loanAccounts">Comptes de crèdit</string>
     <string name="loan_account_id">ID del compte</string>
     <string name="loan_account_status_id">ID del estat del compte</string>
@@ -92,7 +92,7 @@
     <string name="name">Nom</string>
     <string name="office">Oficina</string>
     <string name="office_id">ID de l\'oficina</string>
-    <string name="offline">Fora de línia *</string>
+    <string name="offline">Sense connexió de sincronització *</string>
     <string name="overdue">Vençut</string>
     <string name="password">Contrasenya</string>
     <string name="payment_type">Forma de pagament</string>
@@ -153,4 +153,6 @@
     <string name="large_text">Gran Text</string>
     <string name="product_name">Nom del Producte</string>
     <string name="valid">Vàlid</string>
+    <string name="surveyEmpty"> Aquesta enquesta està buida</string>
+    <string name="back_again">Appuyez de nouveau sur la touche pour quitter</string>
 </resources>

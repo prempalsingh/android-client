@@ -4,21 +4,22 @@
  */
 package com.mifos.api.services;
 
-import com.mifos.objects.SearchedEntity;
 import com.mifos.api.model.APIEndPoint;
+import com.mifos.objects.SearchedEntity;
 
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.http.GET;
-import retrofit.http.Query;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+import rx.Observable;
 
 /**
  * @author fomenkoo
  */
 public interface SearchService {
 
-    @GET(APIEndPoint.SEARCH + "?resource=clients")
-    void searchClientsByName(@Query("query") String clientName,
-                             Callback<List<SearchedEntity>> listCallback);
+    @GET(APIEndPoint.SEARCH)
+    Observable<List<SearchedEntity>> searchResources(@Query("query") String clientName,
+                                                     @Query("resource") String resources,
+                                                     @Query("exactMatch") Boolean exactMatch);
 }

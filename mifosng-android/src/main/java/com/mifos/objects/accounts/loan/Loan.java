@@ -1,4 +1,3 @@
-
 /*
  * This project is licensed under the open source MPL V2.
  * See https://github.com/openMF/android-client/blob/master/LICENSE.md
@@ -6,7 +5,7 @@
 
 package com.mifos.objects.accounts.loan;
 
-import com.mifos.objects.Currency;
+import com.mifos.objects.accounts.savings.Currency;
 import com.mifos.objects.Timeline;
 
 import java.util.ArrayList;
@@ -279,7 +278,8 @@ public class Loan {
         return interestCalculationPeriodType;
     }
 
-    public void setInterestCalculationPeriodType(InterestCalculationPeriodType interestCalculationPeriodType) {
+    public void setInterestCalculationPeriodType(InterestCalculationPeriodType
+                                                         interestCalculationPeriodType) {
         this.interestCalculationPeriodType = interestCalculationPeriodType;
     }
 

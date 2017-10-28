@@ -6,43 +6,81 @@
 package com.mifos.mifosxdroid.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.QuickContactBadge;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mifos.mifosxdroid.R;
+import com.mifos.mifosxdroid.core.SelectableAdapter;
 import com.mifos.objects.client.Client;
+import com.mifos.utils.ImageLoaderUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by ishankhanna on 27/02/14.
  */
-public class ClientNameListAdapter extends BaseAdapter {
+public class ClientNameListAdapter extends SelectableAdapter<RecyclerView.ViewHolder> {
 
-    LayoutInflater layoutInflater;
-    List<Client> pageItems;
+    private List<Client> pageItems;
+    private Context mContext;
 
-    public ClientNameListAdapter(Context context, List<Client> pageItems){
-
-        layoutInflater = LayoutInflater.from(context);
-        this.pageItems = pageItems;
+    @Inject
+    public ClientNameListAdapter() {
+        this.pageItems  = new ArrayList<>();
     }
 
-    @Override
-    public int getCount() {
-        return pageItems.size();
-    }
-
-    @Override
     public Client getItem(int position) {
         return pageItems.get(position);
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        View v = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.row_client_name, parent, false);
+        vh = new ViewHolder(v);
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+
+            Client client = getItem(position);
+            String clientName = client.getFirstname() + " " + client.getLastname();
+            ((ViewHolder) holder).tv_clientName.setText(clientName);
+            ((ViewHolder) holder).tv_clientAccountNumber.setText(client.getAccountNo());
+
+            // lazy the  load profile picture
+            if (client.isImagePresent()) {
+                // make the image url
+                ImageLoaderUtils.loadImage(mContext, client.getId(),
+                        ((ViewHolder) holder).iv_userPicture);
+            } else {
+                ((ViewHolder) holder).iv_userPicture.setImageResource(R.drawable.ic_dp_placeholder);
+            }
+
+            //Changing the Color of Selected Clients
+            ((ViewHolder) holder).view_selectedOverlay
+                    .setBackgroundColor(isSelected(position) ? ContextCompat.getColor(mContext,
+                            R.color.gray_light) : Color.WHITE);
+
+            ((ViewHolder) holder).iv_sync_status
+                    .setVisibility(client.isSync() ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 
     @Override
@@ -51,37 +89,42 @@ public class ClientNameListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-
-        ReusableViewHolder reusableViewHolder;
-
-        if(view==null)
-        {
-            view = layoutInflater.inflate(R.layout.row_client_name,null);
-            reusableViewHolder = new ReusableViewHolder(view);
-            view.setTag(reusableViewHolder);
-
-        }else
-        {
-            reusableViewHolder = (ReusableViewHolder) view.getTag();
-        }
-
-        reusableViewHolder.tv_clientName.setText(pageItems.get(position).getFirstname()+" " +pageItems.get(position).getLastname());
-
-        reusableViewHolder.tv_clientAccountNumber.setText(pageItems.get(position).getAccountNo().toString());
-
-        return view;
+    public int getItemCount() {
+        return pageItems.size();
     }
 
-     static class ReusableViewHolder{
+    public void setContext(Context context) {
+        mContext = context;
+    }
 
-         @InjectView(R.id.tv_clientName) TextView tv_clientName;
-         @InjectView(R.id.tv_clientAccountNumber) TextView tv_clientAccountNumber;
-         @InjectView(R.id.quickContactBadge) QuickContactBadge quickContactBadge;
+    public void setClients(List<Client> clients) {
+        pageItems = clients;
+    }
 
-         public ReusableViewHolder(View view) {
-             ButterKnife.inject(this, view);
-         }
+    public void updateItem(int position) {
+        notifyItemChanged(position);
+    }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.tv_clientName)
+        TextView tv_clientName;
+
+        @BindView(R.id.tv_clientAccountNumber)
+        TextView tv_clientAccountNumber;
+
+        @BindView(R.id.iv_user_picture)
+        ImageView iv_userPicture;
+
+        @BindView(R.id.linearLayout)
+        LinearLayout view_selectedOverlay;
+
+        @BindView(R.id.iv_sync_status)
+        ImageView iv_sync_status;
+
+        public ViewHolder(View v) {
+            super(v);
+            ButterKnife.bind(this, v);
+        }
     }
 }

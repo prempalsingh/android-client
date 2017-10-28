@@ -10,9 +10,11 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by ishankhanna on 30/06/14.
@@ -28,11 +30,11 @@ public class MFDatePicker extends DialogFragment implements DatePickerDialog.OnD
         calendar = Calendar.getInstance();
         dateSet = new StringBuilder()
                 .append(calendar.get(Calendar.DAY_OF_MONTH) < 10 ?
-                        ("0"+calendar.get(Calendar.DAY_OF_MONTH))
+                        ("0" + calendar.get(Calendar.DAY_OF_MONTH))
                         : calendar.get(Calendar.DAY_OF_MONTH))
                 .append("-")
                 .append(calendar.get(Calendar.MONTH) + 1 < 10 ?
-                        ("0"+(calendar.get(Calendar.MONTH) + 1))
+                        ("0" + (calendar.get(Calendar.MONTH) + 1))
                         : calendar.get(Calendar.MONTH) + 1)
                 .append("-")
                 .append(calendar.get(Calendar.YEAR))
@@ -41,7 +43,7 @@ public class MFDatePicker extends DialogFragment implements DatePickerDialog.OnD
 
     OnDatePickListener onDatePickListener;
 
-    public MFDatePicker(){
+    public MFDatePicker() {
 
     }
 
@@ -51,42 +53,39 @@ public class MFDatePicker extends DialogFragment implements DatePickerDialog.OnD
         return mfDatePicker;
     }
 
+    public static String getDatePickedAsString() {
+        return dateSet;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        return new DatePickerDialog(getActivity(),
+        DatePickerDialog dialog = new DatePickerDialog(getActivity(),
                 this, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
+
+        dialog.getDatePicker().setMaxDate(new Date().getTime());
+        return dialog;
     }
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         //TODO Fix Single digit problem that fails with the locale
-        onDatePickListener.onDatePicked(
-                new StringBuilder()
-                        .append(day < 10 ? "0" + day : day)
-                        .append("-")
-                        .append((month + 1) < 10 ? "0" + (month + 1) : month + 1)
-                        .append("-")
-                        .append(year)
-                        .toString()
-        );
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        Date date = calendar.getTime();
+        onDatePickListener.onDatePicked(DateFormat.format("dd-MM-yyyy", date).toString());
 
-    }
-
-    public static String getDatePickedAsString() {
-        return dateSet;
-    }
-
-    public interface OnDatePickListener {
-        public void onDatePicked(String date);
     }
 
     public void setOnDatePickListener(OnDatePickListener onDatePickListener) {
         this.onDatePickListener = onDatePickListener;
     }
 
+    public interface OnDatePickListener {
+        public void onDatePicked(String date);
+    }
 
 
 }

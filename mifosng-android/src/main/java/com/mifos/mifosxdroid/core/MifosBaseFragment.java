@@ -6,7 +6,6 @@
 package com.mifos.mifosxdroid.core;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -14,6 +13,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.mifos.mifosxdroid.R;
+import com.mifos.utils.Network;
 
 /**
  * @author fomenkoo
@@ -23,7 +25,9 @@ public class MifosBaseFragment extends Fragment {
     private BaseActivityCallback callback;
     private Activity activity;
     private InputMethodManager inputManager;
+    private MifosProgressBarHandler mMifosProgressBarHandler;
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -31,40 +35,48 @@ public class MifosBaseFragment extends Fragment {
         try {
             callback = (BaseActivityCallback) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement BaseActivityCallback");
+            throw new ClassCastException(activity.toString() + " must implement " +
+                    "BaseActivityCallback");
         }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager = (InputMethodManager) getActivity().getSystemService(Context
+                .INPUT_METHOD_SERVICE);
+        mMifosProgressBarHandler = new MifosProgressBarHandler(getActivity());
     }
 
     public void showAlertDialog(String title, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setTitle(title);
-        dialog.setMessage(message).setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        }).create().show();
+        new MaterialDialog.Builder().init(getActivity())
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(getStringMessage(R.string.dialog_action_ok), new
+                        DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                })
+                .createMaterialDialog()
+                .show();
     }
 
     public Toolbar getToolbar() {
         return ((MifosBaseActivity) getActivity()).getToolbar();
     }
 
-    protected void showProgress() {
-        showProgress("Working...");
+    protected void showMifosProgressDialog() {
+        showMifosProgressDialog("Working...");
     }
 
-    protected void showProgress(String message) {
+    protected void showMifosProgressDialog(String message) {
         if (callback != null)
             callback.showProgress(message);
     }
 
-    protected void hideProgress() {
+    protected void hideMifosProgressDialog() {
         if (callback != null)
             callback.hideProgress();
     }
@@ -78,7 +90,23 @@ public class MifosBaseFragment extends Fragment {
     }
 
     public void hideKeyboard(View view) {
-        inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager
+                .RESULT_UNCHANGED_SHOWN);
     }
 
+    protected void showMifosProgressBar() {
+        mMifosProgressBarHandler.show();
+    }
+
+    protected void hideMifosProgressBar() {
+        mMifosProgressBarHandler.hide();
+    }
+
+    protected String getStringMessage(int message) {
+        return getResources().getString(message);
+    }
+
+    protected Boolean isOnline() {
+        return Network.isOnline(getActivity());
+    }
 }

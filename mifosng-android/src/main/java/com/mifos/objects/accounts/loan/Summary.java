@@ -1,4 +1,3 @@
-
 /*
  * This project is licensed under the open source MPL V2.
  * See https://github.com/openMF/android-client/blob/master/LICENSE.md
@@ -6,50 +5,156 @@
 
 package com.mifos.objects.accounts.loan;
 
-import com.mifos.objects.Currency;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+import com.mifos.api.local.MifosBaseModel;
+import com.mifos.api.local.MifosDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ModelContainer;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class Summary {
+/**
+ * This Model is saving the Summary of the Loans according to their Id's
+ *
+ */
+@Table(database = MifosDatabase.class, name = "LoansAccountSummary")
+@ModelContainer
+public class Summary extends MifosBaseModel implements Parcelable {
 
-    private Currency currency;
-    private Integer principalDisbursed;
-    private Double principalPaid;
-    private Integer principalWrittenOff;
-    private Double principalOutstanding;
-    private Double principalOverdue;
-    private Double interestCharged;
-    private Double interestPaid;
-    private Integer interestWaived;
-    private Integer interestWrittenOff;
-    private Double interestOutstanding;
-    private Double interestOverdue;
-    private Integer feeChargesCharged;
-    private Integer feeChargesDueAtDisbursementCharged;
-    private Integer feeChargesPaid;
-    private Integer feeChargesWaived;
-    private Integer feeChargesWrittenOff;
-    private Integer feeChargesOutstanding;
-    private Integer feeChargesOverdue;
-    private Integer penaltyChargesCharged;
-    private Integer penaltyChargesPaid;
-    private Integer penaltyChargesWaived;
-    private Integer penaltyChargesWrittenOff;
-    private Integer penaltyChargesOutstanding;
-    private Integer penaltyChargesOverdue;
-    private Double totalExpectedRepayment;
-    private Double totalRepayment;
-    private Double totalExpectedCostOfLoan;
-    private Double totalCostOfLoan;
-    private Integer totalWaived;
-    private Integer totalWrittenOff;
-    private Double totalOutstanding;
-    private Double totalOverdue;
-    private List<Integer> overdueSinceDate = new ArrayList<Integer>();
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    @PrimaryKey
+    transient Integer loanId;
+
+    @SerializedName("Currency")
+    Currency currency;
+
+    @Column
+    @SerializedName("principalDisbursed")
+    Double principalDisbursed;
+
+    @Column
+    @SerializedName("principalPaid")
+    Double principalPaid;
+
+    @SerializedName("principalWrittenOff")
+    Double principalWrittenOff;
+
+    @Column
+    @SerializedName("principalOutstanding")
+    Double principalOutstanding;
+
+    @SerializedName("principalOverdue")
+    Double principalOverdue;
+
+    @Column
+    @SerializedName("interestCharged")
+    Double interestCharged;
+
+    @Column
+    @SerializedName("interestPaid")
+    Double interestPaid;
+
+    @SerializedName("interestWaived")
+    Double interestWaived;
+
+    @SerializedName("interestWrittenOff")
+    Double interestWrittenOff;
+
+    @Column
+    @SerializedName("interestOutstanding")
+    Double interestOutstanding;
+
+    @SerializedName("interestOverdue")
+    Double interestOverdue;
+
+    @Column
+    @SerializedName("feeChargesCharged")
+    Double feeChargesCharged;
+
+    @SerializedName("feeChargesDueAtDisbursementCharged")
+    Double feeChargesDueAtDisbursementCharged;
+
+    @Column
+    @SerializedName("feeChargesPaid")
+    Double feeChargesPaid;
+
+    @SerializedName("feeChargesWaived")
+    Double feeChargesWaived;
+
+    @SerializedName("feeChargesWrittenOff")
+    Double feeChargesWrittenOff;
+
+    @Column
+    @SerializedName("feeChargesOutstanding")
+    Double feeChargesOutstanding;
+
+    @SerializedName("feeChargesOverdue")
+    Double feeChargesOverdue;
+
+    @Column
+    @SerializedName("penaltyChargesCharged")
+    Double penaltyChargesCharged;
+
+    @Column
+    @SerializedName("penaltyChargesPaid")
+    Double penaltyChargesPaid;
+
+    @SerializedName("penaltyChargesWaived")
+    Double penaltyChargesWaived;
+
+    @SerializedName("penaltyChargesWrittenOff")
+    Double penaltyChargesWrittenOff;
+
+    @Column
+    @SerializedName("penaltyChargesOutstanding")
+    Double penaltyChargesOutstanding;
+
+    @SerializedName("penaltyChargesOverdue")
+    Double penaltyChargesOverdue;
+
+    @Column
+    @SerializedName("totalExpectedRepayment")
+    Double totalExpectedRepayment;
+
+    @Column
+    @SerializedName("totalRepayment")
+    Double totalRepayment;
+
+    @SerializedName("totalExpectedCostOfLoan")
+    Double totalExpectedCostOfLoan;
+
+    @SerializedName("totalCostOfLoan")
+    Double totalCostOfLoan;
+
+    @SerializedName("totalWaived")
+    Double totalWaived;
+
+    @SerializedName("totalWrittenOff")
+    Double totalWrittenOff;
+
+    @Column
+    @SerializedName("totalOutstanding")
+    Double totalOutstanding;
+
+    @Column
+    @SerializedName("totalOverdue")
+    Double totalOverdue;
+
+    @SerializedName("overdueSinceDate")
+    List<Integer> overdueSinceDate;
+
+    public Integer getLoanId() {
+        return loanId;
+    }
+
+    public void setLoanId(Integer loanId) {
+        this.loanId = loanId;
+    }
 
     public Currency getCurrency() {
         return currency;
@@ -59,11 +164,11 @@ public class Summary {
         this.currency = currency;
     }
 
-    public Integer getPrincipalDisbursed() {
+    public Double getPrincipalDisbursed() {
         return principalDisbursed;
     }
 
-    public void setPrincipalDisbursed(Integer principalDisbursed) {
+    public void setPrincipalDisbursed(Double principalDisbursed) {
         this.principalDisbursed = principalDisbursed;
     }
 
@@ -75,11 +180,11 @@ public class Summary {
         this.principalPaid = principalPaid;
     }
 
-    public Integer getPrincipalWrittenOff() {
+    public Double getPrincipalWrittenOff() {
         return principalWrittenOff;
     }
 
-    public void setPrincipalWrittenOff(Integer principalWrittenOff) {
+    public void setPrincipalWrittenOff(Double principalWrittenOff) {
         this.principalWrittenOff = principalWrittenOff;
     }
 
@@ -115,19 +220,19 @@ public class Summary {
         this.interestPaid = interestPaid;
     }
 
-    public Integer getInterestWaived() {
+    public Double getInterestWaived() {
         return interestWaived;
     }
 
-    public void setInterestWaived(Integer interestWaived) {
+    public void setInterestWaived(Double interestWaived) {
         this.interestWaived = interestWaived;
     }
 
-    public Integer getInterestWrittenOff() {
+    public Double getInterestWrittenOff() {
         return interestWrittenOff;
     }
 
-    public void setInterestWrittenOff(Integer interestWrittenOff) {
+    public void setInterestWrittenOff(Double interestWrittenOff) {
         this.interestWrittenOff = interestWrittenOff;
     }
 
@@ -147,107 +252,107 @@ public class Summary {
         this.interestOverdue = interestOverdue;
     }
 
-    public Integer getFeeChargesCharged() {
+    public Double getFeeChargesCharged() {
         return feeChargesCharged;
     }
 
-    public void setFeeChargesCharged(Integer feeChargesCharged) {
+    public void setFeeChargesCharged(Double feeChargesCharged) {
         this.feeChargesCharged = feeChargesCharged;
     }
 
-    public Integer getFeeChargesDueAtDisbursementCharged() {
+    public Double getFeeChargesDueAtDisbursementCharged() {
         return feeChargesDueAtDisbursementCharged;
     }
 
-    public void setFeeChargesDueAtDisbursementCharged(Integer feeChargesDueAtDisbursementCharged) {
+    public void setFeeChargesDueAtDisbursementCharged(Double feeChargesDueAtDisbursementCharged) {
         this.feeChargesDueAtDisbursementCharged = feeChargesDueAtDisbursementCharged;
     }
 
-    public Integer getFeeChargesPaid() {
+    public Double getFeeChargesPaid() {
         return feeChargesPaid;
     }
 
-    public void setFeeChargesPaid(Integer feeChargesPaid) {
+    public void setFeeChargesPaid(Double feeChargesPaid) {
         this.feeChargesPaid = feeChargesPaid;
     }
 
-    public Integer getFeeChargesWaived() {
+    public Double getFeeChargesWaived() {
         return feeChargesWaived;
     }
 
-    public void setFeeChargesWaived(Integer feeChargesWaived) {
+    public void setFeeChargesWaived(Double feeChargesWaived) {
         this.feeChargesWaived = feeChargesWaived;
     }
 
-    public Integer getFeeChargesWrittenOff() {
+    public Double getFeeChargesWrittenOff() {
         return feeChargesWrittenOff;
     }
 
-    public void setFeeChargesWrittenOff(Integer feeChargesWrittenOff) {
+    public void setFeeChargesWrittenOff(Double feeChargesWrittenOff) {
         this.feeChargesWrittenOff = feeChargesWrittenOff;
     }
 
-    public Integer getFeeChargesOutstanding() {
+    public Double getFeeChargesOutstanding() {
         return feeChargesOutstanding;
     }
 
-    public void setFeeChargesOutstanding(Integer feeChargesOutstanding) {
+    public void setFeeChargesOutstanding(Double feeChargesOutstanding) {
         this.feeChargesOutstanding = feeChargesOutstanding;
     }
 
-    public Integer getFeeChargesOverdue() {
+    public Double getFeeChargesOverdue() {
         return feeChargesOverdue;
     }
 
-    public void setFeeChargesOverdue(Integer feeChargesOverdue) {
+    public void setFeeChargesOverdue(Double feeChargesOverdue) {
         this.feeChargesOverdue = feeChargesOverdue;
     }
 
-    public Integer getPenaltyChargesCharged() {
+    public Double getPenaltyChargesCharged() {
         return penaltyChargesCharged;
     }
 
-    public void setPenaltyChargesCharged(Integer penaltyChargesCharged) {
+    public void setPenaltyChargesCharged(Double penaltyChargesCharged) {
         this.penaltyChargesCharged = penaltyChargesCharged;
     }
 
-    public Integer getPenaltyChargesPaid() {
+    public Double getPenaltyChargesPaid() {
         return penaltyChargesPaid;
     }
 
-    public void setPenaltyChargesPaid(Integer penaltyChargesPaid) {
+    public void setPenaltyChargesPaid(Double penaltyChargesPaid) {
         this.penaltyChargesPaid = penaltyChargesPaid;
     }
 
-    public Integer getPenaltyChargesWaived() {
+    public Double getPenaltyChargesWaived() {
         return penaltyChargesWaived;
     }
 
-    public void setPenaltyChargesWaived(Integer penaltyChargesWaived) {
+    public void setPenaltyChargesWaived(Double penaltyChargesWaived) {
         this.penaltyChargesWaived = penaltyChargesWaived;
     }
 
-    public Integer getPenaltyChargesWrittenOff() {
+    public Double getPenaltyChargesWrittenOff() {
         return penaltyChargesWrittenOff;
     }
 
-    public void setPenaltyChargesWrittenOff(Integer penaltyChargesWrittenOff) {
+    public void setPenaltyChargesWrittenOff(Double penaltyChargesWrittenOff) {
         this.penaltyChargesWrittenOff = penaltyChargesWrittenOff;
     }
 
-    public Integer getPenaltyChargesOutstanding() {
+    public Double getPenaltyChargesOutstanding() {
         return penaltyChargesOutstanding;
     }
 
-    public void setPenaltyChargesOutstanding(Integer penaltyChargesOutstanding) {
+    public void setPenaltyChargesOutstanding(Double penaltyChargesOutstanding) {
         this.penaltyChargesOutstanding = penaltyChargesOutstanding;
     }
 
-    public Integer getPenaltyChargesOverdue() {
+    public Double getPenaltyChargesOverdue() {
         return penaltyChargesOverdue;
     }
 
-    public void setPenaltyChargesOverdue(Integer penaltyChargesOverdue) {
+    public void setPenaltyChargesOverdue(Double penaltyChargesOverdue) {
         this.penaltyChargesOverdue = penaltyChargesOverdue;
     }
 
@@ -283,19 +388,19 @@ public class Summary {
         this.totalCostOfLoan = totalCostOfLoan;
     }
 
-    public Integer getTotalWaived() {
+    public Double getTotalWaived() {
         return totalWaived;
     }
 
-    public void setTotalWaived(Integer totalWaived) {
+    public void setTotalWaived(Double totalWaived) {
         this.totalWaived = totalWaived;
     }
 
-    public Integer getTotalWrittenOff() {
+    public Double getTotalWrittenOff() {
         return totalWrittenOff;
     }
 
-    public void setTotalWrittenOff(Integer totalWrittenOff) {
+    public void setTotalWrittenOff(Double totalWrittenOff) {
         this.totalWrittenOff = totalWrittenOff;
     }
 
@@ -323,12 +428,101 @@ public class Summary {
         this.overdueSinceDate = overdueSinceDate;
     }
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.currency, flags);
+        dest.writeValue(this.principalDisbursed);
+        dest.writeValue(this.principalPaid);
+        dest.writeValue(this.principalWrittenOff);
+        dest.writeValue(this.principalOutstanding);
+        dest.writeValue(this.principalOverdue);
+        dest.writeValue(this.interestCharged);
+        dest.writeValue(this.interestPaid);
+        dest.writeValue(this.interestWaived);
+        dest.writeValue(this.interestWrittenOff);
+        dest.writeValue(this.interestOutstanding);
+        dest.writeValue(this.interestOverdue);
+        dest.writeValue(this.feeChargesCharged);
+        dest.writeValue(this.feeChargesDueAtDisbursementCharged);
+        dest.writeValue(this.feeChargesPaid);
+        dest.writeValue(this.feeChargesWaived);
+        dest.writeValue(this.feeChargesWrittenOff);
+        dest.writeValue(this.feeChargesOutstanding);
+        dest.writeValue(this.feeChargesOverdue);
+        dest.writeValue(this.penaltyChargesCharged);
+        dest.writeValue(this.penaltyChargesPaid);
+        dest.writeValue(this.penaltyChargesWaived);
+        dest.writeValue(this.penaltyChargesWrittenOff);
+        dest.writeValue(this.penaltyChargesOutstanding);
+        dest.writeValue(this.penaltyChargesOverdue);
+        dest.writeValue(this.totalExpectedRepayment);
+        dest.writeValue(this.totalRepayment);
+        dest.writeValue(this.totalExpectedCostOfLoan);
+        dest.writeValue(this.totalCostOfLoan);
+        dest.writeValue(this.totalWaived);
+        dest.writeValue(this.totalWrittenOff);
+        dest.writeValue(this.totalOutstanding);
+        dest.writeValue(this.totalOverdue);
+        dest.writeList(this.overdueSinceDate);
     }
 
+    public Summary() {
+    }
+
+    protected Summary(Parcel in) {
+        this.currency = in.readParcelable(Currency.class.getClassLoader());
+        this.principalDisbursed = (Double) in.readValue(Double.class.getClassLoader());
+        this.principalPaid = (Double) in.readValue(Double.class.getClassLoader());
+        this.principalWrittenOff = (Double) in.readValue(Double.class.getClassLoader());
+        this.principalOutstanding = (Double) in.readValue(Double.class.getClassLoader());
+        this.principalOverdue = (Double) in.readValue(Double.class.getClassLoader());
+        this.interestCharged = (Double) in.readValue(Double.class.getClassLoader());
+        this.interestPaid = (Double) in.readValue(Double.class.getClassLoader());
+        this.interestWaived = (Double) in.readValue(Double.class.getClassLoader());
+        this.interestWrittenOff = (Double) in.readValue(Double.class.getClassLoader());
+        this.interestOutstanding = (Double) in.readValue(Double.class.getClassLoader());
+        this.interestOverdue = (Double) in.readValue(Double.class.getClassLoader());
+        this.feeChargesCharged = (Double) in.readValue(Double.class.getClassLoader());
+        this.feeChargesDueAtDisbursementCharged = (Double) in.readValue(Double.class
+                .getClassLoader());
+        this.feeChargesPaid = (Double) in.readValue(Double.class.getClassLoader());
+        this.feeChargesWaived = (Double) in.readValue(Double.class.getClassLoader());
+        this.feeChargesWrittenOff = (Double) in.readValue(Double.class.getClassLoader());
+        this.feeChargesOutstanding = (Double) in.readValue(Double.class.getClassLoader());
+        this.feeChargesOverdue = (Double) in.readValue(Double.class.getClassLoader());
+        this.penaltyChargesCharged = (Double) in.readValue(Double.class.getClassLoader());
+        this.penaltyChargesPaid = (Double) in.readValue(Double.class.getClassLoader());
+        this.penaltyChargesWaived = (Double) in.readValue(Double.class.getClassLoader());
+        this.penaltyChargesWrittenOff = (Double) in.readValue(Double.class.getClassLoader());
+        this.penaltyChargesOutstanding = (Double) in.readValue(Double.class.getClassLoader());
+        this.penaltyChargesOverdue = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalExpectedRepayment = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalRepayment = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalExpectedCostOfLoan = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalCostOfLoan = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalWaived = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalWrittenOff = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalOutstanding = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalOverdue = (Double) in.readValue(Double.class.getClassLoader());
+        this.overdueSinceDate = new ArrayList<Integer>();
+        in.readList(this.overdueSinceDate, Integer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Summary> CREATOR = new Parcelable.Creator<Summary>() {
+        @Override
+        public Summary createFromParcel(Parcel source) {
+            return new Summary(source);
+        }
+
+        @Override
+        public Summary[] newArray(int size) {
+            return new Summary[size];
+        }
+    };
 }

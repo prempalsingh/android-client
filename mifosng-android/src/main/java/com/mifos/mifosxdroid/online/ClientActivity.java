@@ -5,29 +5,57 @@
 
 package com.mifos.mifosxdroid.online;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.gson.Gson;
 import com.mifos.mifosxdroid.R;
 import com.mifos.mifosxdroid.core.MifosBaseActivity;
+import com.mifos.mifosxdroid.online.clientdetails.ClientDetailsFragment;
+import com.mifos.mifosxdroid.online.loanaccountsummary.LoanAccountSummaryFragment;
+import com.mifos.mifosxdroid.online.loanrepayment.LoanRepaymentFragment;
+import com.mifos.mifosxdroid.online.loanrepaymentschedule.LoanRepaymentScheduleFragment;
+import com.mifos.mifosxdroid.online.loantransactions.LoanTransactionsFragment;
+import com.mifos.mifosxdroid.online.savingaccountsummary.SavingsAccountSummaryFragment;
+import com.mifos.mifosxdroid.online.savingaccounttransaction.SavingsAccountTransactionFragment;
+import com.mifos.mifosxdroid.online.surveylist.SurveyListFragment;
 import com.mifos.objects.accounts.loan.LoanWithAssociations;
 import com.mifos.objects.accounts.savings.DepositType;
 import com.mifos.objects.accounts.savings.SavingsAccountWithAssociations;
+import com.mifos.objects.survey.Survey;
 import com.mifos.utils.Constants;
 
 import butterknife.ButterKnife;
 
-public class ClientActivity extends MifosBaseActivity implements ClientDetailsFragment.OnFragmentInteractionListener,
+public class ClientActivity extends MifosBaseActivity implements ClientDetailsFragment
+        .OnFragmentInteractionListener,
         LoanAccountSummaryFragment.OnFragmentInteractionListener,
-        SavingsAccountSummaryFragment.OnFragmentInteractionListener {
+        SavingsAccountSummaryFragment.OnFragmentInteractionListener,
+        SurveyListFragment.OnFragmentInteractionListener {
+
+    private int clientId = 0, loanAccountNumber = 0, savingsAccountNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_toolbar_container);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         showBackButton();
-        int clientId = getIntent().getExtras().getInt(Constants.CLIENT_ID);
-        replaceFragment(ClientDetailsFragment.newInstance(clientId), false, R.id.container);
+        clientId = getIntent().getExtras().getInt(Constants.CLIENT_ID);
+        loanAccountNumber = getIntent().getExtras().getInt(Constants.LOAN_ACCOUNT_NUMBER);
+        savingsAccountNumber = getIntent().getExtras().getInt(Constants.SAVINGS_ACCOUNT_NUMBER);
+        DepositType depositType = new DepositType();
+        depositType.setId(100);
+        depositType.setValue(Constants.ENTITY_TYPE_SAVINGS);
+        if (clientId != 0) {
+            replaceFragment(ClientDetailsFragment.newInstance(clientId), false, R.id.container);
+        } else if (loanAccountNumber != 0) {
+            replaceFragment(LoanAccountSummaryFragment.newInstance(loanAccountNumber, false), true,
+                    R.id.container);
+        } else if (savingsAccountNumber != 0) {
+            replaceFragment(SavingsAccountSummaryFragment.newInstance(savingsAccountNumber,
+                    depositType, false), true, R.id.container);
+        }
     }
 
     /**
@@ -37,7 +65,8 @@ public class ClientActivity extends MifosBaseActivity implements ClientDetailsFr
      */
     @Override
     public void loadLoanAccountSummary(int loanAccountNumber) {
-        replaceFragment(LoanAccountSummaryFragment.newInstance(loanAccountNumber), true, R.id.container);
+        replaceFragment(LoanAccountSummaryFragment.newInstance(loanAccountNumber, true), true, R.id
+                .container);
     }
 
     /**
@@ -48,7 +77,8 @@ public class ClientActivity extends MifosBaseActivity implements ClientDetailsFr
      */
     @Override
     public void loadSavingsAccountSummary(int savingsAccountNumber, DepositType accountType) {
-        replaceFragment(SavingsAccountSummaryFragment.newInstance(savingsAccountNumber, accountType), true, R.id.container);
+        replaceFragment(SavingsAccountSummaryFragment.newInstance(savingsAccountNumber,
+                accountType, true), true, R.id.container);
     }
 
     /**
@@ -96,7 +126,24 @@ public class ClientActivity extends MifosBaseActivity implements ClientDetailsFr
      * The transactionType defines if the transaction is a Deposit or a Withdrawal
      */
     @Override
-    public void doTransaction(SavingsAccountWithAssociations savingsAccountWithAssociations, String transactionType, DepositType accountType) {
-        replaceFragment(SavingsAccountTransactionFragment.newInstance(savingsAccountWithAssociations, transactionType, accountType), true, R.id.container);
+    public void doTransaction(SavingsAccountWithAssociations savingsAccountWithAssociations,
+                              String transactionType, DepositType accountType) {
+        replaceFragment(SavingsAccountTransactionFragment.newInstance
+                (savingsAccountWithAssociations, transactionType, accountType), true, R.id
+                .container);
+    }
+
+    /**
+     * Called when the Survey Question Card Click and Survey Question View opens for making survey.
+     *
+     * @param survey   Survey
+     * @param clientId Client Id
+     */
+    @Override
+    public void loadSurveyQuestion(Survey survey, int clientId) {
+        Intent myIntent = new Intent(this, SurveyQuestionActivity.class);
+        myIntent.putExtra(Constants.SURVEYS, (new Gson()).toJson(survey));
+        myIntent.putExtra(Constants.CLIENT_ID, clientId);
+        startActivity(myIntent);
     }
 }

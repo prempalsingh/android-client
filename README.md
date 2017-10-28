@@ -1,11 +1,12 @@
 ### Status
+
+[![Join the chat at https://gitter.im/openMF/android-client](https://badges.gitter.im/openMF/android-client.svg)](https://gitter.im/openMF/android-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/openMF/android-client.svg?branch=master)](https://travis-ci.org/openMF/android-client)
+[![Coverage Status](https://coveralls.io/repos/github/openMF/android-client/badge.svg?branch=master)](https://coveralls.io/github/openMF/android-client?branch=master)
 
 # Android Client for MifosX
 
 This is an Android Application built on top of the MifosX platform for the mifos user community. This is a native Android Application written purely in Java.
-
-The latest continously built APK can be downloaded from [https://vorburger.ci.cloudbees.com/job/MifosX_Android/](https://vorburger.ci.cloudbees.com/job/MifosX_Android/).
 
 # Wiki
 

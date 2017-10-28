@@ -5,28 +5,34 @@
 
 package com.mifos.api;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mifos.api.services.AuthService;
 import com.mifos.api.services.CenterService;
 import com.mifos.api.services.ChargeService;
 import com.mifos.api.services.ClientAccountsService;
 import com.mifos.api.services.ClientService;
-import com.mifos.api.services.CreateSavingsAccountService;
+import com.mifos.api.services.CollectionSheetService;
 import com.mifos.api.services.DataTableService;
 import com.mifos.api.services.DocumentService;
-import com.mifos.api.services.GpsCoordinatesService;
 import com.mifos.api.services.GroupService;
-import com.mifos.api.services.IdentifierService;
 import com.mifos.api.services.LoanService;
+import com.mifos.api.services.NoteService;
 import com.mifos.api.services.OfficeService;
+import com.mifos.api.services.RunReportsService;
 import com.mifos.api.services.SavingsAccountService;
 import com.mifos.api.services.SearchService;
 import com.mifos.api.services.StaffService;
 import com.mifos.api.services.SurveyService;
+import com.mifos.utils.JsonDateSerializer;
+import com.mifos.utils.PrefManager;
 
-import retrofit.Endpoint;
-import retrofit.RestAdapter;
-import retrofit.converter.GsonConverter;
+import java.util.Date;
+
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * @author fomenkoo
@@ -34,136 +40,133 @@ import retrofit.converter.GsonConverter;
 public class BaseApiManager {
 
 
-    private ApiEndpoint API_ENDPOINT = new ApiEndpoint();
-
-    private AuthService authApi;
-    private CenterService centerApi;
-    private ClientAccountsService accountsApi;
-    private ClientService clientsApi;
-    private DataTableService dataTableApi;
-    private LoanService loanApi;
-    private SavingsAccountService savingsApi;
-    private ChargeService chargeService;
-    private CreateSavingsAccountService createSavingsAccountService;
-    private SearchService searchApi;
-    private GpsCoordinatesService gpsApi;
-    private GroupService groupApi;
-    private DocumentService documentApi;
-    private IdentifierService identifierApi;
-    private OfficeService officeApi;
-    private StaffService staffApi;
-    private SurveyService surveyApi;
+    private static Retrofit mRetrofit;
+    private static AuthService authApi;
+    private static CenterService centerApi;
+    private static ClientAccountsService accountsApi;
+    private static ClientService clientsApi;
+    private static DataTableService dataTableApi;
+    private static LoanService loanApi;
+    private static SavingsAccountService savingsApi;
+    private static ChargeService chargeApi;
+    private static SearchService searchApi;
+    private static GroupService groupApi;
+    private static DocumentService documentApi;
+    private static OfficeService officeApi;
+    private static StaffService staffApi;
+    private static SurveyService surveyApi;
+    private static RunReportsService runreportsService;
+    private static NoteService noteService;
+    private static CollectionSheetService collectionSheetService;
 
     public BaseApiManager() {
-        createAuthApi();
-
-        centerApi = createApi(CenterService.class, API_ENDPOINT);
-        accountsApi = createApi(ClientAccountsService.class, API_ENDPOINT);
-        clientsApi = createApi(ClientService.class, API_ENDPOINT);
-        dataTableApi = createApi(DataTableService.class, API_ENDPOINT);
-        loanApi = createApi(LoanService.class, API_ENDPOINT);
-        savingsApi = createApi(SavingsAccountService.class, API_ENDPOINT);
-        searchApi = createApi(SearchService.class, API_ENDPOINT);
-        gpsApi = createApi(GpsCoordinatesService.class, API_ENDPOINT);
-        groupApi = createApi(GroupService.class, API_ENDPOINT);
-        documentApi = createApi(DocumentService.class, API_ENDPOINT);
-        identifierApi = createApi(IdentifierService.class, API_ENDPOINT);
-        officeApi = createApi(OfficeService.class, API_ENDPOINT);
-        staffApi = createApi(StaffService.class, API_ENDPOINT);
-        surveyApi = createApi(SurveyService.class, API_ENDPOINT);
-        chargeService = createApi(ChargeService.class, API_ENDPOINT);
-        createSavingsAccountService = createApi(CreateSavingsAccountService.class, API_ENDPOINT);
+        createService();
     }
 
-    public void setupEndpoint(String instanceUrl) {
-        API_ENDPOINT.updateInstanceUrl(instanceUrl);
+    public static void init() {
+        authApi = createApi(AuthService.class);
+        centerApi = createApi(CenterService.class);
+        accountsApi = createApi(ClientAccountsService.class);
+        clientsApi = createApi(ClientService.class);
+        dataTableApi = createApi(DataTableService.class);
+        loanApi = createApi(LoanService.class);
+        savingsApi = createApi(SavingsAccountService.class);
+        searchApi = createApi(SearchService.class);
+        groupApi = createApi(GroupService.class);
+        documentApi = createApi(DocumentService.class);
+        officeApi = createApi(OfficeService.class);
+        staffApi = createApi(StaffService.class);
+        surveyApi = createApi(SurveyService.class);
+        chargeApi = createApi(ChargeService.class);
+        runreportsService = createApi(RunReportsService.class);
+        noteService = createApi(NoteService.class);
+        collectionSheetService = createApi(CollectionSheetService.class);
     }
 
-    private <T> T createApi(Class<T> clazz, Endpoint endpoint) {
-        return new RestAdapter.Builder()
-                .setEndpoint(endpoint)
-                .setRequestInterceptor(new ApiRequestInterceptor())
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setConverter(new GsonConverter(new GsonBuilder().create()))
-                .build()
-                .create(clazz);
+    private static <T> T createApi(Class<T> clazz) {
+        return mRetrofit.create(clazz);
     }
 
-    private void createAuthApi() {
-        authApi = new RestAdapter.Builder()
-                .setEndpoint(API_ENDPOINT)
-                .setConverter(new GsonConverter(new GsonBuilder().create()))
-                .setRequestInterceptor(new ApiRequestInterceptor())
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build()
-                .create(AuthService.class);
+    public static void createService() {
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new JsonDateSerializer()).create();
+
+        mRetrofit = new Retrofit.Builder()
+                .baseUrl(PrefManager.getInstanceUrl())
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(new MifosOkHttpClient().getMifosOkHttpClient())
+                .build();
+        init();
     }
 
-    protected AuthService getAuthApi() {
+    public AuthService getAuthApi() {
         return authApi;
     }
 
-    protected CenterService getCenterApi() {
+    public CenterService getCenterApi() {
         return centerApi;
     }
 
-    protected ClientAccountsService getAccountsApi() {
+    public ClientAccountsService getAccountsApi() {
         return accountsApi;
     }
 
-    protected ClientService getClientsApi() {
+    public ClientService getClientsApi() {
         return clientsApi;
     }
 
-    protected DataTableService getDataTableApi() {
+    public DataTableService getDataTableApi() {
         return dataTableApi;
     }
 
-    protected LoanService getLoanApi() {
+    public LoanService getLoanApi() {
         return loanApi;
     }
 
-    protected SavingsAccountService getSavingsApi() {
+    public SavingsAccountService getSavingsApi() {
         return savingsApi;
     }
 
-    protected SearchService getSearchApi() {
+    public SearchService getSearchApi() {
         return searchApi;
     }
 
-    protected GpsCoordinatesService getGpsApi() {
-        return gpsApi;
-    }
-
-    protected GroupService getGroupApi() {
+    public GroupService getGroupApi() {
         return groupApi;
     }
 
-    protected DocumentService getDocumentApi() {
+    public DocumentService getDocumentApi() {
         return documentApi;
     }
 
-    protected IdentifierService getIdentifierApi() {
-        return identifierApi;
-    }
-
-    protected OfficeService getOfficeApi() {
+    public OfficeService getOfficeApi() {
         return officeApi;
     }
 
-    protected StaffService getStaffApi() {
+    public StaffService getStaffApi() {
         return staffApi;
     }
 
-    protected SurveyService getSurveyApi() {
+    public SurveyService getSurveyApi() {
         return surveyApi;
     }
 
-    public ChargeService getChargeService() {
-        return chargeService;
+    public ChargeService getChargeApi() {
+        return chargeApi;
     }
 
-    public CreateSavingsAccountService getCreateSavingsAccountService() {
-        return createSavingsAccountService;
+    public RunReportsService getRunReportsService() {
+        return runreportsService;
+    }
+
+    public NoteService getNoteApi() {
+        return noteService;
+    }
+
+    public CollectionSheetService getCollectionSheetApi() {
+        return collectionSheetService;
     }
 }

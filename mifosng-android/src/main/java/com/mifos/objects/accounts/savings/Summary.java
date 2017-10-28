@@ -1,4 +1,3 @@
-
 /*
  * This project is licensed under the open source MPL V2.
  * See https://github.com/openMF/android-client/blob/master/LICENSE.md
@@ -6,23 +5,50 @@
 
 package com.mifos.objects.accounts.savings;
 
-import com.mifos.objects.Currency;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.SerializedName;
+import com.mifos.api.local.MifosBaseModel;
+import com.mifos.api.local.MifosDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ModelContainer;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 
-import javax.annotation.Generated;
+@Table(database = MifosDatabase.class, name = "SavingsAccountSummary")
+@ModelContainer
+public class Summary extends MifosBaseModel implements Parcelable {
 
-@Generated("org.jsonschema2pojo")
-public class Summary {
+    @PrimaryKey
+    transient Integer savingsId;
 
-    private Currency currency;
-    private Double totalDeposits;
-    private Double accountBalance;
-    private Double totalWithdrawals;
-    private Double totalInterestEarned;
+    @SerializedName("currency")
+    Currency currency;
 
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    @SerializedName("totalDeposits")
+    @Column
+    Double totalDeposits;
+
+    @SerializedName("accountBalance")
+    @Column
+    Double accountBalance;
+
+    @SerializedName("totalWithdrawals")
+    @Column
+    Double totalWithdrawals;
+
+    @SerializedName("totalInterestEarned")
+    @Column
+    Double totalInterestEarned;
+
+    public Integer getSavingsId() {
+        return savingsId;
+    }
+
+    public void setSavingsId(Integer savingsId) {
+        this.savingsId = savingsId;
+    }
 
     public Currency getCurrency() {
         return currency;
@@ -64,16 +90,41 @@ public class Summary {
         this.totalInterestEarned = totalInterestEarned;
     }
 
-    public void setAdditionalProperties(Map<String, Object> additionalProperties) {
-        this.additionalProperties = additionalProperties;
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.currency, flags);
+        dest.writeValue(this.totalDeposits);
+        dest.writeValue(this.accountBalance);
+        dest.writeValue(this.totalWithdrawals);
+        dest.writeValue(this.totalInterestEarned);
     }
 
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    public Summary() {
     }
 
+    protected Summary(Parcel in) {
+        this.currency = in.readParcelable(Currency.class.getClassLoader());
+        this.totalDeposits = (Double) in.readValue(Double.class.getClassLoader());
+        this.accountBalance = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalWithdrawals = (Double) in.readValue(Double.class.getClassLoader());
+        this.totalInterestEarned = (Double) in.readValue(Double.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Summary> CREATOR = new Parcelable.Creator<Summary>() {
+        @Override
+        public Summary createFromParcel(Parcel source) {
+            return new Summary(source);
+        }
+
+        @Override
+        public Summary[] newArray(int size) {
+            return new Summary[size];
+        }
+    };
 }

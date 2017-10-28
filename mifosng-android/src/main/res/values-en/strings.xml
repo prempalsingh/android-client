@@ -13,7 +13,7 @@
     <string name="group_name">Group Name</string>
     <string name="staff_name">Staff Name</string>
     <string name="level_name">Level Name</string>
-    <string name="offline">Offline *</string>
+    <string name="offline">Offline Sync *</string>
     <string name="client_search_hint">Client name or ID</string>
     <string name="search_results">Search Results</string>
     <string name="client_search">Client Search</string>
@@ -91,7 +91,7 @@
     <string name="additional_payment">Additional Payment</string>
     <string name="break_down">Break Down</string>
     <string name="loanAccounts">Loan Accounts</string>
-    <string name="loanAccountSummary">Loan Account Summary</string>
+    <string name="loanAccountSummaryStatus">Loan Account Summary</string>
     <string name="loan_repayment_schedule">Loan Repayment Schedule</string>
     <string name="loan_rejected_message">Loan was Rejected</string>
     <string name="repayment">Repayment</string>
@@ -186,6 +186,7 @@
     <string name="large_text">Large Text</string>
     <string name="product_name">Product Name</string>
     <string name="valid">Valid</string>
+    <string name="surveyEmpty">This Survey is Empty</string>
 
 
 </resources>

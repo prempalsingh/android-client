@@ -4,10 +4,14 @@
  */
 package com.mifos.api.services;
 
+import com.mifos.api.GenericResponse;
 import com.mifos.api.model.APIEndPoint;
 import com.mifos.api.model.CollectionSheetPayload;
 import com.mifos.api.model.Payload;
-import com.mifos.api.model.SaveResponse;
+import com.mifos.objects.accounts.CenterAccounts;
+import com.mifos.objects.client.ActivatePayload;
+import com.mifos.objects.response.SaveResponse;
+import com.mifos.objects.client.Page;
 import com.mifos.objects.db.CollectionSheet;
 import com.mifos.objects.db.OfflineCenter;
 import com.mifos.objects.group.Center;
@@ -17,13 +21,13 @@ import com.mifos.services.data.CenterPayload;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Callback;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.http.QueryMap;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
+import rx.Observable;
 
 /**
  * @author fomenkoo
@@ -32,38 +36,64 @@ public interface CenterService {
 
 
     @GET(APIEndPoint.CENTERS)
-    void getAllCenters(Callback<List<Center>> callback);
+    Observable<Page<Center>> getCenters(@Query("paged") boolean b,
+                                        @Query("offset") int offset,
+                                        @Query("limit") int limit);
+
+    @GET(APIEndPoint.CENTERS + "/{centerId}/accounts")
+    Observable<CenterAccounts> getCenterAccounts(@Path("centerId") int centerId);
 
     @GET(APIEndPoint.CENTERS + "/{centerId}?associations=groupMembers,collectionMeetingCalendar")
-    void getCenterWithGroupMembersAndCollectionMeetingCalendar(@Path("centerId") int centerId,
-                                                               Callback<CenterWithAssociations> centerWithAssociationsCallback);
+    Observable<CenterWithAssociations> getCenterWithGroupMembersAndCollectionMeetingCalendar
+            (@Path("centerId") int centerId);
 
     @GET(APIEndPoint.CENTERS)
-    void getAllCentersInOffice(@Query("officeId") int officeId, @QueryMap Map<String, Object> additionalParams,
-                               Callback<List<Center>> centersCallback);
+    Observable<List<Center>> getAllCentersInOffice(@Query("officeId") int officeId,
+                                                   @QueryMap Map<String, Object> additionalParams);
+
 
     @GET(APIEndPoint.CENTERS + "/{centerId}?associations=groupMembers")
-    void getAllGroupsForCenter(@Path("centerId") int centerId,
-                               Callback<CenterWithAssociations> centerWithAssociationsCallback);
+    Observable<CenterWithAssociations> getAllGroupsForCenter(@Path("centerId") int centerId);
 
     @POST(APIEndPoint.CENTERS + "/{centerId}?command=generateCollectionSheet")
-    void getCollectionSheet(@Path("centerId") long centerId, @Body Payload payload, Callback<CollectionSheet> callback);
+    Observable<CollectionSheet> getCollectionSheet(@Path("centerId") long centerId,
+                                                   @Body Payload payload);
 
     @POST(APIEndPoint.CENTERS + "/{centerId}?command=saveCollectionSheet")
-    SaveResponse saveCollectionSheet(@Path("centerId") int centerId, @Body CollectionSheetPayload collectionSheetPayload);
+    Observable<SaveResponse> saveCollectionSheet(
+            @Path("centerId") int centerId,
+            @Body CollectionSheetPayload collectionSheetPayload);
 
     @POST(APIEndPoint.CENTERS + "/{centerId}?command=saveCollectionSheet")
-    void saveCollectionSheet(@Path("centerId") int centerId, @Body CollectionSheetPayload collectionSheetPayload, Callback<SaveResponse> saveResponseCallback);
+    Observable<SaveResponse> saveCollectionSheetAsync(
+            @Path("centerId") int centerId,
+            @Body CollectionSheetPayload collectionSheetPayload);
 
 
-    @POST(APIEndPoint.CLIENTS + "")
-    void uploadNewClientDetails();
+    /*@POST(APIEndPoint.CLIENTS + "")
+    void uploadNewClientDetails();*/
 
     @POST(APIEndPoint.CENTERS)
-    void createCenter(@Body CenterPayload centerPayload, Callback<Center> callback);
+    Observable<SaveResponse> createCenter(@Body CenterPayload centerPayload);
 
     @GET(APIEndPoint.CENTERS)
-    void getCenterList(@Query("dateFormat") String dateFormat, @Query("locale") String locale,
-                       @Query("meetingDate") String meetingDate, @Query("officeId") int officeId,
-                       @Query("staffId") int staffId, Callback<List<OfflineCenter>> callback);
+    Observable<List<OfflineCenter>> getCenterList(
+            @Query("dateFormat") String dateFormat,
+            @Query("locale") String locale,
+            @Query("meetingDate") String meetingDate,
+            @Query("officeId") int officeId,
+            @Query("staffId") int staffId);
+
+
+    /**
+     * This is the service to activate the center
+     * REST ENT POINT
+     * https://demo.openmf.org/fineract-provider/api/v1/centers/{centerId}?command=activate
+     *
+     * @param centerId
+     * @return GenericResponse
+     */
+    @POST(APIEndPoint.CENTERS + "/{centerId}?command=activate")
+    Observable<GenericResponse> activateCenter(@Path("centerId") int centerId,
+                                               @Body ActivatePayload activatePayload);
 }

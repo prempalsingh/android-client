@@ -1,4 +1,3 @@
-
 /*
  * This project is licensed under the open source MPL V2.
  * See https://github.com/openMF/android-client/blob/master/LICENSE.md
@@ -6,15 +5,21 @@
 
 package com.mifos.objects.accounts.loan;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class InterestCalculationPeriodType {
+import com.google.gson.annotations.SerializedName;
 
-    private Integer id;
-    private String code;
-    private String value;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+public class InterestCalculationPeriodType implements Parcelable {
+
+    @SerializedName("id")
+    Integer id;
+
+    @SerializedName("code")
+    String code;
+
+    @SerializedName("value")
+    String value;
 
     public Integer getId() {
         return id;
@@ -40,12 +45,47 @@ public class InterestCalculationPeriodType {
         this.value = value;
     }
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    @Override
+    public String toString() {
+        return "InterestCalculationPeriodType{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", value='" + value + '\'' +
+                '}';
     }
 
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.code);
+        dest.writeString(this.value);
+    }
+
+    public InterestCalculationPeriodType() {
+    }
+
+    protected InterestCalculationPeriodType(Parcel in) {
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.code = in.readString();
+        this.value = in.readString();
+    }
+
+    public static final Parcelable.Creator<InterestCalculationPeriodType> CREATOR = new Parcelable
+            .Creator<InterestCalculationPeriodType>() {
+        @Override
+        public InterestCalculationPeriodType createFromParcel(Parcel source) {
+            return new InterestCalculationPeriodType(source);
+        }
+
+        @Override
+        public InterestCalculationPeriodType[] newArray(int size) {
+            return new InterestCalculationPeriodType[size];
+        }
+    };
 }
